@@ -5,25 +5,35 @@ const VideoList = (props) => {
     const teamNumber = props.teamNumber;
     const eventKey = props.eventKey;
 
-    const [videos, setVideos] = useState([]);
+    const [videos, setVideos] = useState([{"key": "No videos found yet"}]);
 
-    const callApi = () => {
+    const callApi = async () => {
 
         if (apiKey === null || apiKey === "") {
             console.log("No API Key provided");
             return;
         }
 
-        fetch(`https://thebluealliance.com/api/v3/team/frc${teamNumber}/event/${eventKey}/matches/`, {
+        const data = await fetch(`http://127.0.0.1:8000/team/frc${teamNumber}/event/${eventKey}/matches/`, {
             headers: {
                 "X-TBA-Auth-Key": apiKey,
             }
-        })
-        .then(data => data.json())
-        .then(json => console.log(json));
+        });
+        const json = await data.json();
+
+        let v = [];
+
+        json.forEach(match => {
+            if (match !== undefined && match.videos !== undefined && match.videos[0] !== undefined)
+                v.push(match.videos[0]);   
+        });
+
+        setVideos([...v]);
     }
 
     useEffect(() => {
+        callApi();
+
         const timer = setInterval(callApi, 1000);
 
         return (
@@ -32,9 +42,18 @@ const VideoList = (props) => {
     })
 
     return (
-        <>
-
-        </>
+        <ul>
+            {console.log(videos)}
+            {
+                videos.map(video => {
+                    return (
+                        <li key={video.key}>
+                            <a href={`https://youtube.com/watch/${video.key}`}>youtube.com/watch/{video.key}</a>
+                        </li>
+                    );
+                })
+            }
+        </ul>
     );
 }
 
