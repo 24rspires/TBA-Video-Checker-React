@@ -5,6 +5,8 @@ const VideoList = (props) => {
     const teamNumber = props.teamNumber;
     const eventKey = props.eventKey;
 
+    const apiLink = window.location.href.includes("localhost") ? "http://127.0.0.1:8000" : "https://thebluealliance.com";
+
     const [videos, setVideos] = useState([{"key": "No videos found yet"}]);
 
     const callApi = async () => {
@@ -14,7 +16,7 @@ const VideoList = (props) => {
             return;
         }
 
-        const data = await fetch(`http://127.0.0.1:8000/team/frc${teamNumber}/event/${eventKey}/matches/`, {
+        const data = await fetch(`${apiLink}/api/v3/team/frc${teamNumber}/event/${eventKey}/matches/`, {
             headers: {
                 "X-TBA-Auth-Key": apiKey,
             }
