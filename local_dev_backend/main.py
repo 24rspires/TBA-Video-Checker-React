@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.get("/team/{team_key}/event/{event_key}/matches/")
+@app.get("api/v3/team/{team_key}/event/{event_key}/matches/")
 async def matches(team_key: str, event_key: str, X_TBA_Auth_Key: Annotated[str|None, Header()] = None):
     if X_TBA_Auth_Key is None:
         return {"Error":"No API Key provided"}
